@@ -3,10 +3,10 @@
 // Import this in every HTML page via <script src="js/api.js">
 // ============================================================
 
-// 🔴 Change this to your Render backend URL after deployment
-// e.g. "https://farmbuddy-backend.onrender.com"
-const API_BASE = "https://farmbuddy-backend.onrender.com";
-
+// Auto-detect environment: use localhost when developing locally
+const API_BASE = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+  ? "http://localhost:5000"
+  : "https://farmbuddy-3ney.onrender.com";
 // ─────────────────────────────────────────────
 // Token helpers
 // ─────────────────────────────────────────────
@@ -83,21 +83,21 @@ const Products = {
     if (category) params.set("category", category);
     return apiFetch(`/api/products?${params}`);
   },
-  getMy()     { return apiFetch("/api/products/my"); },
-  getById(id) { return apiFetch(`/api/products/${id}`); },
-  add(data)   { return apiFetch("/api/products",    { method: "POST",   body: JSON.stringify(data) }); },
+  getMy()          { return apiFetch("/api/products/my"); },
+  getById(id)      { return apiFetch(`/api/products/${id}`); },
+  add(data)        { return apiFetch("/api/products", { method: "POST", body: JSON.stringify(data) }); },
   update(id, data) { return apiFetch(`/api/products/${id}`, { method: "PUT", body: JSON.stringify(data) }); },
-  delete(id)  { return apiFetch(`/api/products/${id}`, { method: "DELETE" }); },
+  delete(id)       { return apiFetch(`/api/products/${id}`, { method: "DELETE" }); },
 };
 
 // ─────────────────────────────────────────────
 // Orders API
 // ─────────────────────────────────────────────
 const Orders = {
-  place(items)          { return apiFetch("/api/orders",         { method: "POST", body: JSON.stringify({ items }) }); },
-  getMy()               { return apiFetch("/api/orders/my"); },
-  getFarmerOrders()     { return apiFetch("/api/orders/farmer"); },
-  getById(id)           { return apiFetch(`/api/orders/${id}`); },
+  place(items)             { return apiFetch("/api/orders", { method: "POST", body: JSON.stringify({ items }) }); },
+  getMy()                  { return apiFetch("/api/orders/my"); },
+  getFarmerOrders()        { return apiFetch("/api/orders/farmer"); },
+  getById(id)              { return apiFetch(`/api/orders/${id}`); },
   updateStatus(id, status) { return apiFetch(`/api/orders/${id}/status`, { method: "PATCH", body: JSON.stringify({ status }) }); },
 };
 
@@ -117,14 +117,9 @@ const Cart = {
     }
     Cart.save(cart);
   },
-  remove(productId) {
-    Cart.save(Cart.get().filter(i => i.productId !== productId));
-  },
-  updateQty(productId, qty) {
-    const cart = Cart.get().map(i => i.productId === productId ? { ...i, quantity: qty } : i).filter(i => i.quantity > 0);
-    Cart.save(cart);
-  },
-  clear()          { localStorage.removeItem("fb_cart"); },
-  count()          { return Cart.get().reduce((s, i) => s + i.quantity, 0); },
-  total()          { return Cart.get().reduce((s, i) => s + i.price * i.quantity, 0); },
+  remove(productId)        { Cart.save(Cart.get().filter(i => i.productId !== productId)); },
+  updateQty(productId, qty){ Cart.save(Cart.get().map(i => i.productId === productId ? { ...i, quantity: qty } : i).filter(i => i.quantity > 0)); },
+  clear()                  { localStorage.removeItem("fb_cart"); },
+  count()                  { return Cart.get().reduce((s, i) => s + i.quantity, 0); },
+  total()                  { return Cart.get().reduce((s, i) => s + i.price * i.quantity, 0); },
 };

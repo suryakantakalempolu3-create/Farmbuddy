@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Farmers - FarmBuddy</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #2d6a2d; --green-dark: #1a4a1a; --green-light: #4a9e4a;
+    --orange: #e07b39; --cream: #faf7f2; --white: #ffffff;
+    --text: #1a2e1a; --text-light: #5a7a5a; --border: #d4e8d4;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); }
+
+  nav {
+    background: var(--green-dark); padding: 0 5%;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 70px; position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+  }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .logo-icon { font-size: 28px; }
+  .logo-text strong { font-family: 'Playfair Display', serif; font-size: 22px; color: white; display: block; }
+  .logo-text span { font-size: 11px; color: #a8d5a8; }
+  .nav-links { list-style: none; display: flex; gap: 30px; align-items: center; }
+  .nav-links a { color: #d4ead4; text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: white; }
+  .nav-links a.active { border-bottom: 2px solid var(--orange); padding-bottom: 2px; }
+  .cart-btn {
+    background: var(--orange); color: white; border: none; padding: 8px 18px;
+    border-radius: 25px; font-size: 14px; font-weight: 600; cursor: pointer;
+    display: flex; align-items: center; gap: 8px; text-decoration: none; transition: background 0.2s;
+  }
+  .cart-btn:hover { background: #c96a28; }
+  .cart-badge {
+    background: white; color: var(--orange); border-radius: 50%;
+    width: 20px; height: 20px; display: flex; align-items: center;
+    justify-content: center; font-size: 11px; font-weight: 700;
+  }
+
+  /* PAGE HEADER */
+  .page-header {
+    background: linear-gradient(135deg, var(--green-dark) 0%, var(--green) 100%);
+    padding: 56px 8% 48px; text-align: center; color: white;
+  }
+  .page-header h1 { font-family: 'Playfair Display', serif; font-size: 44px; margin-bottom: 12px; }
+  .page-header p { font-size: 17px; color: #c8e6c8; max-width: 520px; margin: 0 auto; }
+
+  /* STATS STRIP */
+  .stats-strip {
+    background: white; padding: 20px 8%;
+    display: flex; justify-content: center; gap: 60px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  }
+  .stat { text-align: center; }
+  .stat strong { display: block; font-size: 28px; font-weight: 800; color: var(--green); }
+  .stat span { font-size: 13px; color: var(--text-light); }
+
+  /* FARMERS GRID */
+  .farmers-section { padding: 48px 8%; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: 28px; margin-bottom: 28px; }
+  .farmers-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+
+  .farmer-card {
+    background: white; border-radius: 20px; overflow: hidden;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.07); border: 1px solid var(--border);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .farmer-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(45,106,45,0.15); }
+
+  .farmer-card-top {
+    background: linear-gradient(135deg, var(--green) 0%, var(--green-light) 100%);
+    padding: 28px 24px 20px; text-align: center; position: relative;
+  }
+  .farmer-card-top img {
+    width: 90px; height: 90px; border-radius: 50%; object-fit: cover;
+    border: 4px solid white; margin-bottom: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  }
+  .farmer-card-top h3 { font-family: 'Playfair Display', serif; font-size: 20px; color: white; margin-bottom: 4px; }
+  .farmer-card-top .location { font-size: 13px; color: #c8e6c8; }
+  .verified { position: absolute; top: 16px; right: 16px; background: white; color: var(--green); font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+
+  .farmer-card-body { padding: 20px 24px; }
+  .farmer-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .tag { background: #eafaea; color: var(--green); font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px; border: 1px solid #a8d5a8; }
+  .farmer-stats { display: flex; justify-content: space-between; margin-bottom: 18px; }
+  .f-stat { text-align: center; }
+  .f-stat strong { display: block; font-size: 18px; font-weight: 800; color: var(--green); }
+  .f-stat span { font-size: 11px; color: var(--text-light); }
+
+  .profile-btn {
+    display: block; text-align: center; background: var(--green); color: white;
+    padding: 11px 0; border-radius: 30px; text-decoration: none; font-weight: 700;
+    font-size: 14px; transition: background 0.2s;
+  }
+  .profile-btn:hover { background: var(--green-light); }
+
+  footer { background: var(--green-dark); color: #a8d5a8; text-align: center; padding: 20px; font-size: 13px; margin-top: 20px; }
+  footer span { color: white; }
+  
+
+  @media (max-width: 768px) {
+    .farmers-grid { grid-template-columns: 1fr; }
+    .stats-strip { gap: 30px; flex-wrap: wrap; }
+  }
+
+  .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none; padding:4px; }
+  .hamburger span { width:24px; height:2px; background:white; border-radius:2px; display:block; }
+  .mobile-menu { display:none; position:fixed; top:70px; left:0; right:0; background:var(--green-dark); padding:16px 5% 20px; z-index:99; box-shadow:0 6px 20px rgba(0,0,0,0.3); border-top:1px solid #2d5a2d; }
+  .mobile-menu.open { display:block; }
+  .mobile-menu ul { list-style:none; display:flex; flex-direction:column; }
+  .mobile-menu ul li a { display:block; padding:13px 0; color:#d4ead4; text-decoration:none; font-size:15px; font-weight:500; border-bottom:1px solid #2d5a2d; }
+  .mobile-menu ul li a.active { color:white; }
+  .mobile-menu .m-cart { display:block; margin-top:14px; background:var(--orange); color:white; text-align:center; padding:12px; border-radius:25px; text-decoration:none; font-weight:600; }
+  @media (max-width:700px) { .nav-links, .cart-btn { display:none; } .hamburger { display:flex; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <span class="logo-icon">🌿</span>
+    <div class="logo-text">
+      <strong>FarmBuddy</strong>
+      <span>Fresh from Farm to Your Home</span>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="products.html">Products</a></li>
+    <li><a href="farmers.html" class="active">Farmers</a></li>
+    <li><a href="about.html">About</a></li>
+    <li id="loginNavItem"><a href="login.html">Login</a></li>
+  </ul>
+  <a href="cart.html" class="cart-btn">🛒 Cart <span class="cart-badge" id="cartBadge">0</span></a>
+  <button class="hamburger" onclick="toggleMenu()" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <ul>
+    <li><a href="index.html">🏠 Home</a></li>
+    <li><a href="products.html">🛍️ Products</a></li>
+    <li><a href="farmers.html">👨‍🌾 Farmers</a></li>
+    <li><a href="about.html">ℹ️ About</a></li>
+    <li><a href="login.html">🔑 Login</a></li>
+  </ul>
+  <a href="cart.html" class="m-cart">🛒 View Cart</a>
+</div>
+
+<div class="page-header">
+  <h1>👨‍🌾 Meet Our Farmers</h1>
+  <p>Real people, real farms. Get to know the dedicated farmers who grow your food with love and care.</p>
+</div>
+
+<div class="stats-strip">
+  <div class="stat"><strong>120+</strong><span>Verified Farmers</span></div>
+  <div class="stat"><strong>15</strong><span>States Covered</span></div>
+  <div class="stat"><strong>500+</strong><span>Acres Farmed</span></div>
+  <div class="stat"><strong>10K+</strong><span>Happy Customers</span></div>
+</div>
+
+<ction class="farmers-section">
+  <h2 class="section-title">Our Verified Farmers</h2>
+  <div class="farmers-grid">
+
+    <!-- Farmer 1 -->
+    <div class="farmer-card">
+      <div class="farmer-card-top">
+        <span class="verified">✅ Verified</span>
+        <img src="https://images.unsplash.com/photo-1607346256330-dee7af15f7c5?w=220&q=80" alt="Ramesh Kumar">
+        <h3>Ramesh Kumar</h3>
+        <div class="location">📍 Vijayawada, Andhra Pradesh</div>
+      </div>
+      <div class="farmer-card-body">
+        <div class="farmer-tags">
+          <span class="tag">🌿 Organic</span>
+          <span class="tag">🥬 Vegetables</span>
+          <span class="tag">10+ Yrs</span>
+        </div>
+        <div class="farmer-stats">
+          <div class="f-stat"><strong>4.9★</strong><span>Rating</span></div>
+          <div class="f-stat"><strong>12</strong><span>Products</span></div>
+          <div class="f-stat"><strong>2 Acres</strong><span>Farm Size</span></div>
+        </div>
+        <a href="farmer.html?id=1" class="profile-btn">View Profile →</a>
+      </div>
+    </div>
+
+    <!-- Farmer 2 -->
+    <div class="farmer-card">
+      <div class="farmer-card-top">
+        <span class="verified">✅ Verified</span>
+        <img src="https://images.unsplash.com/photo-1542909168-82c3e7fdca5c?w=220&q=80" alt="Suresh Patel">
+        <h3>Suresh Patel</h3>
+        <div class="location">📍 Anand, Gujarat</div>
+      </div>
+      <div class="farmer-card-body">
+        <div class="farmer-tags">
+          <span class="tag">🥔 Root Crops</span>
+          <span class="tag">🌾 Grains</span>
+          <span class="tag">8 Yrs</span>
+        </div>
+        <div class="farmer-stats">
+          <div class="f-stat"><strong>4.7★</strong><span>Rating</span></div>
+          <div class="f-stat"><strong>9</strong><span>Products</span></div>
+          <div class="f-stat"><strong>1 Acre</strong><span>Farm Size</span></div>
+        </div>
+        <a href="farmer2.html?id=2" class="profile-btn">View Profile →</a>
+      </div>
+    </div>
+
+
+<script>
+  const cart = JSON.parse(localStorage.getItem('fb_cart') || '[]');
+  document.getElementById('cartBadge').textContent = cart.reduce((s, i) => s + i.qty, 0);
+</script>
+
+<script src="js/api.js"></script>
+<script>
+  const u = getUser();
+  const loginLi = document.getElementById("loginNavItem");
+  if (loginLi && u) {
+    loginLi.innerHTML = u.role === "farmer" ? '<a href="farmer2.html">Dashboard</a>' : '<a href="#" onclick="Auth.logout()">Logout</a>';
+  }
+  document.querySelectorAll(".cart-badge").forEach(el => el.textContent = Cart.count());
+</script>
+</body>
+</html>
+

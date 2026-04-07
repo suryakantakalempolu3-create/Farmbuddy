@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Farmer Dashboard - FarmBuddy</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --green: #2d6a2d; --green-dark: #1a4a1a; --green-light: #4a9e4a; --orange: #e07b39; --cream: #faf7f2; --border: #d4e8d4; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); }
+  nav { background: var(--green-dark); padding: 0 5%; display: flex; align-items: center; justify-content: space-between; height: 70px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 20px rgba(0,0,0,0.3); }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .logo-text strong { font-family: 'Playfair Display', serif; font-size: 22px; color: white; display: block; }
+  .logo-text span { font-size: 11px; color: #a8d5a8; }
+  .nav-right { display: flex; gap: 16px; align-items: center; }
+  .nav-right a { color: #d4ead4; text-decoration: none; font-size: 14px; font-weight: 500; }
+  .logout-btn { background: rgba(255,255,255,0.15); color: white; border: none; padding: 8px 16px; border-radius: 20px; font-size: 13px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+  .main { max-width: 1100px; margin: 0 auto; padding: 36px 24px; }
+  .welcome { background: linear-gradient(135deg, var(--green-dark), var(--green)); color: white; border-radius: 20px; padding: 32px 36px; margin-bottom: 32px; }
+  .welcome h1 { font-family: 'Playfair Display', serif; font-size: 28px; margin-bottom: 6px; }
+  .welcome p { opacity: 0.85; font-size: 15px; }
+  .tabs { display: flex; gap: 8px; margin-bottom: 28px; }
+  .tab { padding: 11px 24px; border-radius: 25px; border: 2px solid var(--border); background: white; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; color: #555; }
+  .tab.active, .tab:hover { background: var(--green); color: white; border-color: var(--green); }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* Add Product Form */
+  .add-form { background: white; border-radius: 16px; padding: 28px; border: 1px solid var(--border); box-shadow: 0 2px 16px rgba(0,0,0,0.06); margin-bottom: 32px; }
+  .add-form h2 { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--green-dark); margin-bottom: 20px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-group { margin-bottom: 0; }
+  .form-group.full { grid-column: 1 / -1; }
+  label { font-size: 13px; font-weight: 600; color: #555; display: block; margin-bottom: 5px; }
+  input, select, textarea { width: 100%; padding: 11px 14px; border: 2px solid var(--border); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: #333; outline: none; transition: border-color 0.2s; }
+  input:focus, select:focus, textarea:focus { border-color: var(--green); }
+  textarea { resize: vertical; min-height: 80px; }
+  .add-btn { background: var(--green); color: white; border: none; padding: 13px 28px; border-radius: 25px; font-size: 15px; font-weight: 700; font-family: 'DM Sans', sans-serif; cursor: pointer; margin-top: 16px; transition: all 0.2s; }
+  .add-btn:hover:not(:disabled) { background: var(--green-light); }
+  .add-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+  .success-msg { color: var(--green); font-size: 14px; font-weight: 600; margin-top: 10px; display: none; }
+  .error-msg { color: #e74c3c; font-size: 14px; margin-top: 10px; display: none; }
+
+  /* Products table */
+  .prod-card { background: white; border-radius: 14px; padding: 18px 22px; margin-bottom: 14px; display: flex; align-items: center; gap: 18px; border: 1px solid var(--border); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+  .prod-name { flex: 1; font-weight: 700; color: var(--green-dark); font-size: 16px; }
+  .prod-meta { font-size: 12px; color: #888; }
+  .prod-price { font-size: 18px; font-weight: 700; color: var(--green); min-width: 80px; text-align: right; }
+  .prod-stock { font-size: 13px; color: #555; min-width: 80px; text-align: center; }
+  .del-btn { background: #fee2e2; color: #e74c3c; border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .del-btn:hover { background: #fca5a5; }
+
+  /* Orders table */
+  .order-card { background: white; border-radius: 14px; padding: 20px 24px; margin-bottom: 14px; border: 1px solid var(--border); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+  .order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .order-id { font-size: 12px; color: #888; font-family: monospace; }
+  .status-badge { padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; }
+  .status-pending   { background: #fef3c7; color: #92400e; }
+  .status-confirmed { background: #dbeafe; color: #1e40af; }
+  .status-shipped   { background: #ede9fe; color: #5b21b6; }
+  .status-delivered { background: #d1fae5; color: #065f46; }
+  .status-cancelled { background: #fee2e2; color: #991b1b; }
+  .order-items { font-size: 14px; color: #555; margin-bottom: 10px; }
+  .order-footer { display: flex; justify-content: space-between; align-items: center; }
+  .order-total { font-weight: 700; color: var(--green-dark); }
+  .status-select { padding: 6px 12px; border: 2px solid var(--border); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; }
+  .update-btn { background: var(--orange); color: white; border: none; padding: 7px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; margin-left: 8px; }
+
+  .loading { text-align: center; padding: 40px; color: #888; }
+  footer { background: var(--green-dark); color: #a8d5a8; text-align: center; padding: 24px; font-size: 13px; margin-top: 60px; }
+  footer span { color: white; }
+  @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="logo">
+    <span style="font-size:26px">🌿</span>
+    <div class="logo-text"><strong>FarmBuddy</strong><span>Farmer Dashboard</span></div>
+  </a>
+  <div class="nav-right">
+    <a href="products.html">🛍️ Shop</a>
+    <button class="logout-btn" onclick="Auth.logout()">Logout</button>
+  </div>
+</nav>
+
+<div class="main">
+  <div class="welcome">
+    <h1 id="welcomeMsg">👨‍🌾 Welcome back!</h1>
+    <p>Manage your products and view incoming orders below.</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('products', this)">🌾 My Products</button>
+    <button class="tab" onclick="switchTab('orders', this)">📦 Orders</button>
+  </div>
+
+  <!-- Products Section -->
+  <div class="section active" id="productsSection">
+    <div class="add-form">
+      <h2>➕ Add New Product</h2>
+      <div class="form-grid">
+        <div class="form-group"><label>Product Name *</label><input id="pName" placeholder="e.g. Organic Tomatoes"></div>
+        <div class="form-group"><label>Price (₹/kg) *</label><input id="pPrice" type="number" min="0" placeholder="e.g. 45"></div>
+        <div class="form-group"><label>Category</label>
+          <select id="pCategory">
+            <option value="vegetables">Vegetables</option>
+            <option value="fruits">Fruits</option>
+            <option value="grains">Grains</option>
+            <option value="dairy">Dairy</option>
+            <option value="general">General</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Stock (kg)</label><input id="pStock" type="number" min="0" placeholder="e.g. 100"></div>
+        <div class="form-group full"><label>Description</label><textarea id="pDesc" placeholder="Describe your product..."></textarea></div>
+        <div class="form-group full"><label>Image URL (optional)</label><input id="pImage" placeholder="https://..."></div>
+      </div>
+      <button class="add-btn" id="addBtn" onclick="addProduct()">+ Add Product</button>
+      <div class="success-msg" id="addSuccess">✅ Product added successfully!</div>
+      <div class="error-msg" id="addError"></div>
+    </div>
+    <div id="myProducts"><div class="loading">Loading your products...</div></div>
+  </div>
+
+  <!-- Orders Section -->
+  <div class="section" id="ordersSection">
+    <div id="farmerOrders"><div class="loading">Loading orders...</div></div>
+  </div>
+</div>
+
+<footer><p>© 2024 <span>FarmBuddy</span>. All rights reserved.</p></footer>
+<script src="js/api.js"></script>
+<script>
+  // Auth guard — farmer only
+  const user = requireAuth('farmer');
+  if (user) document.getElementById('welcomeMsg').textContent = `👨‍🌾 Welcome back, ${user.username}!`;
+
+  function switchTab(tab, btn) {
+    document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(tab + 'Section').classList.add('active');
+    if (tab === 'orders') loadOrders();
+  }
+
+  // ── Products ──────────────────────────
+  async function loadMyProducts() {
+    try {
+      const res = await Products.getMy();
+      const el = document.getElementById('myProducts');
+      if (!res.products.length) { el.innerHTML = '<p style="color:#888;padding:20px">No products yet. Add one above!</p>'; return; }
+      el.innerHTML = res.products.map(p => `
+        <div class="prod-card">
+          <div>
+            <div class="prod-name">${p.name}</div>
+            <div class="prod-meta">${p.category} · Stock: ${p.stock}kg</div>
+          </div>
+          <div style="flex:1;padding:0 16px;font-size:13px;color:#666">${p.description || ''}</div>
+          <div class="prod-price">₹${p.price}</div>
+          <button class="del-btn" onclick="deleteProduct('${p._id}', this)">🗑 Delete</button>
+        </div>
+      `).join('');
+    } catch (err) {
+      document.getElementById('myProducts').innerHTML = `<p style="color:#e74c3c">Failed to load: ${err.message}</p>`;
+    }
+  }
+
+  async function addProduct() {
+    const name  = document.getElementById('pName').value.trim();
+    const price = document.getElementById('pPrice').value;
+    const successEl = document.getElementById('addSuccess');
+    const errorEl   = document.getElementById('addError');
+    const btn       = document.getElementById('addBtn');
+    successEl.style.display = 'none'; errorEl.style.display = 'none';
+    if (!name || !price) { errorEl.textContent = 'Name and price are required.'; errorEl.style.display = 'block'; return; }
+    btn.disabled = true; btn.textContent = 'Adding...';
+    try {
+      await Products.add({
+        name, price,
+        category:    document.getElementById('pCategory').value,
+        stock:       document.getElementById('pStock').value || 0,
+        description: document.getElementById('pDesc').value.trim(),
+        imageUrl:    document.getElementById('pImage').value.trim(),
+      });
+      successEl.style.display = 'block';
+      ['pName','pPrice','pStock','pDesc','pImage'].forEach(id => document.getElementById(id).value = '');
+      loadMyProducts();
+    } catch (err) {
+      errorEl.textContent = err.message; errorEl.style.display = 'block';
+    }
+    btn.disabled = false; btn.textContent = '+ Add Product';
+  }
+
+  async function deleteProduct(id, btn) {
+    if (!confirm('Delete this product?')) return;
+    try { await Products.delete(id); loadMyProducts(); }
+    catch (err) { alert(err.message); }
+  }
+
+  // ── Orders ──────────────────────────
+  async function loadOrders() {
+    try {
+      const res = await Orders.getFarmerOrders();
+      const el = document.getElementById('farmerOrders');
+      if (!res.orders.length) { el.innerHTML = '<p style="color:#888;padding:20px">No orders yet.</p>'; return; }
+      el.innerHTML = res.orders.map(o => `
+        <div class="order-card">
+          <div class="order-header">
+            <div>
+              <div style="font-weight:700;color:var(--green-dark);margin-bottom:2px">Order #${o._id.slice(-6).toUpperCase()}</div>
+              <div class="order-id">${new Date(o.createdAt).toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'})}</div>
+            </div>
+            <span class="status-badge status-${o.status}">${o.status}</span>
+          </div>
+          <div class="order-items">${o.items.map(i => `${i.name} × ${i.quantity}`).join(' &nbsp;|&nbsp; ')}</div>
+          <div class="order-footer">
+            <div class="order-total">Total: ₹${o.total}</div>
+            <div>
+              <select class="status-select" id="sel_${o._id}">
+                ${['pending','confirmed','shipped','delivered','cancelled'].map(s => `<option value="${s}" ${o.status===s?'selected':''}>${s}</option>`).join('')}
+              </select>
+              <button class="update-btn" onclick="updateStatus('${o._id}')">Update</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    } catch (err) {
+      document.getElementById('farmerOrders').innerHTML = `<p style="color:#e74c3c">Failed to load: ${err.message}</p>`;
+    }
+  }
+
+  async function updateStatus(orderId) {
+    const status = document.getElementById('sel_' + orderId).value;
+    try { await Orders.updateStatus(orderId, status); loadOrders(); }
+    catch (err) { alert(err.message); }
+  }
+
+  loadMyProducts();
+</script>
+</body>
+</html>

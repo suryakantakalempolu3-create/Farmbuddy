@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Farmer Profile - FarmBuddy</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --green: #2d6a2d; --green-dark: #1a4a1a; --green-light: #4a9e4a; --orange: #e07b39; --cream: #faf7f2; --border: #d4e8d4; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); }
+
+  nav { background: var(--green-dark); padding: 0 5%; display: flex; align-items: center; justify-content: space-between; height: 70px; }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .logo-text strong { font-family: 'Playfair Display', serif; font-size: 22px; color: white; display: block; }
+  .logo-text span { font-size: 11px; color: #a8d5a8; }
+  .nav-links { list-style: none; display: flex; gap: 30px; }
+  .nav-links a { color: #d4ead4; text-decoration: none; font-size: 14px; font-weight: 500; }
+  .cart-btn { background: var(--orange); color: white; border: none; padding: 8px 18px; border-radius: 25px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; text-decoration: none; }
+
+  .back-bar { padding: 16px 8%; background: white; border-bottom: 1px solid var(--border); }
+  .back-bar a { color: var(--green); text-decoration: none; font-size: 14px; font-weight: 600; }
+  .back-bar a:hover { text-decoration: underline; }
+
+  .profile-container { max-width: 900px; margin: 40px auto; padding: 0 24px; }
+
+  .profile-card {
+    background: white; border-radius: 20px; padding: 36px;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.07); border: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+  .profile-header { display: flex; gap: 28px; align-items: flex-start; }
+  .farmer-avatar {
+    width: 110px; height: 110px; border-radius: 50%; object-fit: cover;
+    border: 4px solid var(--green); flex-shrink: 0;
+  }
+  .farmer-info h1 { font-family: 'Playfair Display', serif; font-size: 28px; margin-bottom: 8px; }
+  .verified-badge {
+    background: #eafaea; color: var(--green); padding: 4px 12px;
+    border-radius: 20px; font-size: 12px; font-weight: 700;
+    display: inline-flex; align-items: center; gap: 5px; margin-bottom: 12px;
+    border: 1px solid #a8d5a8;
+  }
+  .farmer-meta { display: flex; flex-direction: column; gap: 8px; }
+  .meta-item { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #555; }
+  .meta-item strong { color: var(--text); }
+
+  .section-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px solid var(--border); }
+  .about-text { font-size: 15px; color: #555; line-height: 1.7; }
+
+  .products-section { background: white; border-radius: 20px; padding: 36px; box-shadow: 0 2px 20px rgba(0,0,0,0.07); border: 1px solid var(--border); }
+  .products-mini-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .mini-product {
+    border-radius: 12px; overflow: hidden; border: 1px solid var(--border);
+    transition: transform 0.2s;
+  }
+  .mini-product:hover { transform: translateY(-3px); }
+  .mini-product img { width: 100%; height: 100px; object-fit: cover; }
+  .mini-product p { padding: 10px; font-size: 13px; font-weight: 600; text-align: center; }
+
+  .view-products-btn {
+    display: inline-block; background: var(--green); color: white;
+    padding: 14px 36px; border-radius: 30px; text-decoration: none;
+    font-weight: 700; font-size: 15px; transition: all 0.2s;
+  }
+  .view-products-btn:hover { background: var(--green-light); transform: translateY(-2px); }
+
+  footer { background: var(--green-dark); color: #a8d5a8; text-align: center; padding: 20px; font-size: 13px; margin-top: 40px; }
+  footer span { color: white; }
+
+  .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none; padding:4px; }
+  .hamburger span { width:24px; height:2px; background:white; border-radius:2px; display:block; }
+  .mobile-menu { display:none; position:fixed; top:70px; left:0; right:0; background:var(--green-dark); padding:16px 5% 20px; z-index:99; box-shadow:0 6px 20px rgba(0,0,0,0.3); border-top:1px solid #2d5a2d; }
+  .mobile-menu.open { display:block; }
+  .mobile-menu ul { list-style:none; display:flex; flex-direction:column; }
+  .mobile-menu ul li a { display:block; padding:13px 0; color:#d4ead4; text-decoration:none; font-size:15px; font-weight:500; border-bottom:1px solid #2d5a2d; }
+  .mobile-menu ul li a.active { color:white; }
+  .mobile-menu .m-cart { display:block; margin-top:14px; background:var(--orange); color:white; text-align:center; padding:12px; border-radius:25px; text-decoration:none; font-weight:600; }
+  @media (max-width:700px) { .nav-links, .cart-btn { display:none; } .hamburger { display:flex; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <span style="font-size:26px">🌿</span>
+    <div class="logo-text">
+      <strong>FarmBuddy</strong>
+      <span>Fresh from Farm to Your Home</span>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="products.html">Products</a></li>
+    <li><a href="farmers.html">Farmers</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <a href="cart.html" class="cart-btn">🛒 Cart</a>
+  <button class="hamburger" onclick="toggleMenu()" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <ul>
+    <li><a href="index.html">🏠 Home</a></li>
+    <li><a href="products.html">🛍️ Products</a></li>
+    <li><a href="farmers.html">👨‍🌾 Farmers</a></li>
+    <li><a href="about.html">ℹ️ About</a></li>
+    <li><a href="login.html">🔑 Login</a></li>
+  </ul>
+  <a href="cart.html" class="m-cart">🛒 View Cart</a>
+</div>
+
+<div class="back-bar">
+  <a href="farmers.html">← Back to Farmers</a>
+</div>
+
+<div class="profile-container">
+  <div class="profile-card">
+    <div class="profile-header">
+      <img src="https://images.unsplash.com/photo-1607346256330-dee7af15f7c5?w=220&q=80" alt="Ramesh Kumar" class="farmer-avatar">
+      <div class="farmer-info">
+        <div class="verified-badge">✅ Verified Farmer</div>
+        <h1>Ramesh Kumar</h1>
+        <div class="farmer-meta">
+          <div class="meta-item">🪪 <span><strong>Farmer ID:</strong> FARM12345</span></div>
+          <div class="meta-item">📍 <span>Vijayawada, Andhra Pradesh</span></div>
+          <div class="meta-item">📱 <span>+91 98765 43210</span></div>
+          <div class="meta-item">🌱 <span>Natural Farming • 10+ Years</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="profile-card">
+    <div class="section-title">About the Farmer</div>
+    <p class="about-text">
+      I have been farming for over 10 years. We grow a variety of vegetables and fruits using organic and natural methods.
+      Our goal is to provide healthy food to every home. We believe in sustainable farming that respects the environment
+      and provides the best nutrition to consumers.
+    </p>
+  </div>
+
+  <div class="products-section">
+    <div class="section-title">Products from this Farmer</div>
+    <div class="products-mini-grid">
+      <div class="mini-product">
+        <img src="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=200&q=80" alt="Tomatoes">
+        <p>Tomatoes</p>
+      </div>
+      <div class="mini-product">
+        <img src="https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=200&q=80" alt="Carrots">
+        <p>Carrots</p>
+      </div>
+      <div class="mini-product">
+        <img src="https://images.unsplash.com/photo-1568584711075-3d021a7c3ca3?w=200&q=80" alt="Cucumbers">
+        <p>Cucumbers</p>
+      </div>
+      <div class="mini-product">
+        <img src="https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=200&q=80" alt="Spinach">
+        <p>Spinach</p>
+      </div>
+    </div>
+    <a href="products.html" class="view-products-btn">View All Products →</a>
+  </div>
+</div>
+
+<footer><p>© 2024 <span>FarmBuddy</span>. All rights reserved.</p></footer>
+<script src="js/api.js"></script>
+<script>
+  const u = getUser();
+  const loginLi = document.getElementById("loginNavItem");
+  if (loginLi && u) {
+    loginLi.innerHTML = u.role === "farmer" ? '<a href="farmer2.html">Dashboard</a>' : '<a href="#" onclick="Auth.logout()">Logout</a>';
+  }
+  document.querySelectorAll(".cart-badge").forEach(el => el.textContent = Cart.count());
+</script>
+</body>
+</html>

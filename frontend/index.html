@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FarmBuddy - Fresh from Farm to Your Home</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #2d6a2d; --green-dark: #1a4a1a; --green-light: #4a9e4a;
+    --orange: #e07b39; --cream: #faf7f2; --white: #ffffff;
+    --text: #1a2e1a; --text-light: #5a7a5a; --border: #d4e8d4;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); }
+
+  /* NAV */
+  nav {
+    background: var(--green-dark); padding: 0 5%;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 70px; position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+  }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .logo-icon { font-size: 28px; }
+  .logo-text { color: var(--white); }
+  .logo-text strong { font-family: 'Playfair Display', serif; font-size: 22px; display: block; }
+  .logo-text span { font-size: 11px; color: #a8d5a8; }
+  .nav-links { list-style: none; display: flex; gap: 28px; align-items: center; }
+  .nav-links a { color: #d4ead4; text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; white-space: nowrap; }
+  .nav-links a:hover, .nav-links a.active { color: white; }
+  .nav-links a.active { border-bottom: 2px solid var(--orange); padding-bottom: 2px; }
+  .cart-btn {
+    background: var(--orange); color: white; border: none; padding: 8px 18px;
+    border-radius: 25px; font-family: 'DM Sans', sans-serif; font-size: 14px;
+    font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;
+    text-decoration: none; transition: background 0.2s; white-space: nowrap;
+  }
+  .cart-btn:hover { background: #c96a28; }
+  .cart-badge {
+    background: white; color: var(--orange); border-radius: 50%;
+    width: 20px; height: 20px; display: flex; align-items: center;
+    justify-content: center; font-size: 11px; font-weight: 700;
+  }
+  /* Hamburger */
+  .hamburger {
+    display: none; flex-direction: column; gap: 5px; cursor: pointer;
+    background: none; border: none; padding: 4px;
+  }
+  .hamburger span { width: 24px; height: 2px; background: white; border-radius: 2px; transition: all 0.3s; display: block; }
+  .mobile-menu {
+    display: none; position: fixed; top: 70px; left: 0; right: 0;
+    background: var(--green-dark); padding: 16px 5% 20px; z-index: 99;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3); border-top: 1px solid #2d5a2d;
+  }
+  .mobile-menu.open { display: block; }
+  .mobile-menu ul { list-style: none; display: flex; flex-direction: column; gap: 0; }
+  .mobile-menu ul li a {
+    display: block; padding: 13px 0; color: #d4ead4; text-decoration: none;
+    font-size: 15px; font-weight: 500; border-bottom: 1px solid #2d5a2d;
+  }
+  .mobile-menu ul li a.active { color: white; }
+  .mobile-menu .m-cart {
+    display: block; margin-top: 14px; background: var(--orange); color: white;
+    text-align: center; padding: 12px; border-radius: 25px; text-decoration: none;
+    font-weight: 600; font-size: 15px;
+  }
+
+  /* HERO */
+  .hero { position: relative; height: 520px; overflow: hidden; display: flex; align-items: center; }
+  .hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: brightness(0.55); }
+  .hero-content { position: relative; padding: 0 8%; max-width: 600px; animation: fadeInUp 0.8s ease; }
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  .hero-content h1 { font-family: 'Playfair Display', serif; font-size: 56px; color: white; line-height: 1.1; text-shadow: 0 2px 20px rgba(0,0,0,0.4); }
+  .hero-content p { color: #e0f0e0; font-size: 18px; margin: 16px 0 28px; line-height: 1.6; }
+  .btn-primary { background: var(--green); color: white; padding: 14px 32px; border-radius: 30px; text-decoration: none; font-weight: 600; font-size: 16px; display: inline-block; transition: all 0.2s; }
+  .btn-primary:hover { background: var(--green-light); transform: translateY(-2px); }
+
+  /* FEATURES STRIP */
+  .features { background: white; padding: 28px 8%; display: flex; justify-content: center; gap: 60px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); flex-wrap: wrap; }
+  .feature { display: flex; align-items: center; gap: 12px; }
+  .feature-icon { font-size: 32px; }
+  .feature-text strong { display: block; font-size: 15px; color: var(--text); }
+  .feature-text span { font-size: 12px; color: var(--text-light); }
+
+  /* WHY SECTION */
+  .why { text-align: center; padding: 60px 8%; background: var(--cream); }
+  .why h2 { font-family: 'Playfair Display', serif; font-size: 36px; margin-bottom: 12px; }
+  .why p { color: var(--text-light); font-size: 16px; max-width: 500px; margin: 0 auto 40px; }
+  .why-cards { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; }
+  .why-card { background: white; border-radius: 16px; padding: 30px 24px; flex: 1; min-width: 200px; max-width: 260px; box-shadow: 0 2px 20px rgba(45,106,45,0.08); border: 1px solid var(--border); transition: transform 0.2s, box-shadow 0.2s; }
+  .why-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(45,106,45,0.15); }
+  .why-card .icon { font-size: 40px; margin-bottom: 12px; }
+  .why-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .why-card p { font-size: 13px; color: var(--text-light); line-height: 1.6; }
+
+  /* PRODUCTS PREVIEW */
+  .products-preview { padding: 20px 8% 60px; }
+  .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
+  .section-header h2 { font-family: 'Playfair Display', serif; font-size: 30px; }
+  .view-all { color: var(--green); text-decoration: none; font-weight: 600; font-size: 14px; border-bottom: 1px solid var(--green); }
+  .products-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .product-card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 15px rgba(0,0,0,0.06); border: 1px solid var(--border); transition: transform 0.2s, box-shadow 0.2s; }
+  .product-card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(45,106,45,0.15); }
+  .product-card img { width: 100%; height: 180px; object-fit: cover; }
+  .product-info { padding: 16px; }
+  .product-info h3 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+  .product-info .farmer { font-size: 12px; color: var(--text-light); margin-bottom: 10px; }
+  .product-bottom { display: flex; justify-content: space-between; align-items: center; }
+  .price { font-size: 16px; font-weight: 700; color: var(--green); }
+  .add-btn { background: var(--green); color: white; border: none; padding: 7px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.2s; }
+  .add-btn:hover { background: var(--green-light); }
+
+  /* FARM LAND SECTION */
+  .land-section { background: linear-gradient(135deg, #eaf4ea 0%, #f5f8f0 100%); padding: 60px 8%; }
+  .land-section .section-header h2 { font-family: 'Playfair Display', serif; font-size: 32px; color: var(--green-dark); }
+  .land-section .section-header p { font-size: 14px; color: var(--text-light); margin-top: 4px; }
+  .land-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .land-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 20px rgba(45,106,45,0.10); border: 1px solid var(--border); transition: transform 0.2s, box-shadow 0.2s; }
+  .land-card:hover { transform: translateY(-5px); box-shadow: 0 12px 32px rgba(45,106,45,0.18); }
+  .land-card img { width: 100%; height: 200px; object-fit: cover; }
+  .land-badge {
+    position: absolute; top: 14px; left: 14px; background: var(--orange);
+    color: white; font-size: 11px; font-weight: 700; padding: 4px 10px;
+    border-radius: 20px; letter-spacing: 0.5px;
+  }
+  .land-img-wrap { position: relative; }
+  .land-info { padding: 20px; }
+  .land-info h3 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .land-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+  .land-tag { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-light); background: #f0f7f0; border-radius: 20px; padding: 4px 10px; }
+  .land-price { font-size: 20px; font-weight: 800; color: var(--green); margin-bottom: 4px; }
+  .land-price span { font-size: 12px; font-weight: 400; color: var(--text-light); }
+  .land-seller { font-size: 12px; color: var(--text-light); margin-bottom: 14px; }
+  .land-actions { display: flex; gap: 10px; }
+  .btn-contact { flex: 1; background: var(--green); color: white; border: none; padding: 10px; border-radius: 25px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.2s; }
+  .btn-contact:hover { background: var(--green-light); }
+  .btn-wish { background: white; color: var(--green); border: 2px solid var(--green); padding: 10px 14px; border-radius: 25px; font-size: 15px; cursor: pointer; transition: all 0.2s; }
+  .btn-wish:hover { background: var(--green); color: white; }
+  .list-land-banner {
+    margin-top: 40px; background: var(--green-dark); border-radius: 20px;
+    padding: 36px 40px; display: flex; align-items: center; justify-content: space-between;
+    gap: 20px; flex-wrap: wrap;
+  }
+  .list-land-banner h3 { font-family: 'Playfair Display', serif; font-size: 26px; color: white; margin-bottom: 6px; }
+  .list-land-banner p { color: #a8d5a8; font-size: 14px; max-width: 420px; }
+  .btn-list-land {
+    background: var(--orange); color: white; padding: 14px 32px;
+    border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 15px;
+    white-space: nowrap; transition: background 0.2s;
+  }
+  .btn-list-land:hover { background: #c96a28; }
+
+  /* FOOTER */
+  footer { background: var(--green-dark); color: #a8d5a8; text-align: center; padding: 20px; font-size: 13px; }
+  footer span { color: white; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .products-grid { grid-template-columns: repeat(2, 1fr); }
+    .land-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 700px) {
+    .nav-links, .cart-btn { display: none; }
+    .hamburger { display: flex; }
+    .hero-content h1 { font-size: 36px; }
+    .products-grid { grid-template-columns: repeat(2, 1fr); }
+    .land-grid { grid-template-columns: 1fr; }
+    .why-cards { flex-direction: column; align-items: center; }
+    .list-land-banner { flex-direction: column; text-align: center; }
+  }
+  .toast.show { transform: translateY(0) !important; opacity: 1 !important; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <span class="logo-icon">🌿</span>
+    <div class="logo-text">
+      <strong>FarmBuddy</strong>
+      <span>Fresh from Farm to Your Home</span>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="active">Home</a></li>
+    <li><a href="products.html">Products</a></li>
+    <li><a href="farmers.html">Farmers</a></li>
+    <li><a href="about.html">About</a></li>
+    <li id="loginNavItem"><a href="login.html">Login</a></li>
+  </ul>
+  <a href="cart.html" class="cart-btn">🛒 Cart <span class="cart-badge">0</span></a>
+  <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <ul>
+    <li><a href="index.html" class="active">🏠 Home</a></li>
+    <li><a href="products.html">🛍️ Products</a></li>
+    <li><a href="farmers.html">👨‍🌾 Farmers</a></li>
+    <li><a href="about.html">ℹ️ About</a></li>
+    <li><a href="login.html">🔑 Login</a></li>
+  </ul>
+  <a href="cart.html" class="m-cart">🛒 View Cart</a>
+</div>
+
+<section class="hero">
+  <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1400&q=80" alt="Farm" class="hero-img">
+  <div class="hero-content">
+    <h1>Fresh from Farm to Your Home</h1>
+    <p>Buy directly from farmers. Get healthy, fresh and organic products.</p>
+    <a href="products.html" class="btn-primary">Shop Now →</a>
+  </div>
+</section>
+
+<div class="features">
+  <div class="feature">
+    <span class="feature-icon">🌱</span>
+    <div class="feature-text"><strong>Fresh Produce</strong><span>100% Organic & Healthy</span></div>
+  </div>
+  <div class="feature">
+    <span class="feature-icon">👨‍🌾</span>
+    <div class="feature-text"><strong>Direct from Farmers</strong><span>No Middlemen</span></div>
+  </div>
+  <div class="feature">
+    <span class="feature-icon">🚚</span>
+    <div class="feature-text"><strong>Fast Delivery</strong><span>To Your Doorstep</span></div>
+  </div>
+</div>
+
+<section class="why">
+  <h2>Why Choose FarmBuddy?</h2>
+  <p>We connect farmers directly with customers to provide fresh, affordable, and locally grown products.</p>
+  <div class="why-cards">
+    <div class="why-card"><div class="icon">🌿</div><h3>100% Organic</h3><p>All products are grown naturally without harmful chemicals.</p></div>
+    <div class="why-card"><div class="icon">💰</div><h3>Best Prices</h3><p>Direct from farmers means lower prices for you, better income for them.</p></div>
+    <div class="why-card"><div class="icon">🤝</div><h3>Support Farmers</h3><p>Every purchase directly supports local farming communities.</p></div>
+    <div class="why-card"><div class="icon">⚡</div><h3>Same Day Delivery</h3><p>Fresh products harvested and delivered the same day.</p></div>
+  </div>
+</section>
+
+<section class="products-preview" style="padding-top:0;">
+  <div class="section-header">
+    <h2>Popular Products</h2>
+    <a href="products.html" class="view-all">View All Products →</a>
+  </div>
+  <div class="products-grid">
+    <div class="product-card">
+      <img src="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400&q=80" alt="Tomatoes">
+      <div class="product-info">
+        <h3>Fresh Tomatoes</h3>
+        <div class="farmer">👨‍🌾 Ramesh Kumar</div>
+        <div class="product-bottom">
+          <span class="price">₹20/kg</span>
+          <button class="add-btn" onclick="addToCart('Tomatoes', 20)">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+    <div class="product-card">
+      <img src="https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=400&q=80" alt="Potatoes">
+      <div class="product-info">
+        <h3>Potatoes</h3>
+        <div class="farmer">👨‍🌾 Suresh Patel</div>
+        <div class="product-bottom">
+          <span class="price">₹15/kg</span>
+          <button class="add-btn" onclick="addToCart('Potatoes', 15)">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+    <div class="product-card">
+      <img src="https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=400&q=80" alt="Watermelon">
+      <div class="product-info">
+        <h3>Carrot</h3>
+        <div class="farmer">👨‍🌾 Vijay Sharma</div>
+        <div class="product-bottom">
+          <span class="price">₹50/kg</span>
+          <button class="add-btn" onclick="addToCart('Watermelon', 50)">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+    <div class="product-card">
+      <img src="https://images.unsplash.com/photo-1508747703725-719777637510?w=400&q=80" alt="Onions">
+      <div class="product-info">
+        <h3>Onions</h3>
+        <div class="farmer">👨‍🌾 Anita Devi</div>
+        <div class="product-bottom">
+          <span class="price">₹100/kg</span>
+          <button class="add-btn" onclick="addToCart('Onions', 100)">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FARM LAND FOR SALE SECTION -->
+<section class="land-section">
+  <div class="section-header">
+    <div>
+      <h2>🌾 Farm Land for Sale</h2>
+      <p>Buy 1–2 acre agricultural land directly from farmers — no brokers</p>
+    </div>
+    <a href="#" class="view-all">View All Listings →</a>
+  </div>
+
+  <div class="land-grid">
+
+    <!-- Land Card 1 -->
+    <div class="land-card">
+      <div class="land-img-wrap">
+        <img src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=600&q=80" alt="Farm Land">
+        <span class="land-badge">1 Acre</span>
+      </div>
+      <div class="land-info">
+        <h3>Fertile Agricultural Land – Nashik</h3>
+        <div class="land-meta">
+          <span class="land-tag">📍 Nashik, Maharashtra</span>
+          <span class="land-tag">🌊 Borewell Available</span>
+          <span class="land-tag">🌿 Red Soil</span>
+        </div>
+        <div class="land-price">₹8,50,000 <span>/ acre</span></div>
+        <div class="land-seller">👨‍🌾 Listed by: Ramesh Kumar · Farmer 1</div>
+        <div class="land-actions">
+          <button class="btn-contact" onclick="contactFarmer('Ramesh Kumar', 'Nashik Land')">📞 Contact Farmer</button>
+          <button class="btn-wish">♡</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Land Card 2 -->
+    <div class="land-card">
+      <div class="land-img-wrap">
+        <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&q=80" alt="Farm Land">
+        <span class="land-badge">2 Acres</span>
+      </div>
+      <div class="land-info">
+        <h3>Prime Farmland with Irrigation – Pune</h3>
+        <div class="land-meta">
+          <span class="land-tag">📍 Pune, Maharashtra</span>
+          <span class="land-tag">💧 Canal Irrigation</span>
+          <span class="land-tag">🌾 Black Soil</span>
+        </div>
+        <div class="land-price">₹15,00,000 <span>/ 2 acres</span></div>
+        <div class="land-seller">👨‍🌾 Listed by: Suresh Patel · Farmer 2</div>
+        <div class="land-actions">
+          <button class="btn-contact" onclick="contactFarmer('Suresh Patel', 'Pune Land')">📞 Contact Farmer</button>
+          <button class="btn-wish">♡</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Land Card 3 -->
+    <div class="land-card">
+      <div class="land-img-wrap">
+        <img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=600&q=80" alt="Farm Land">
+        <span class="land-badge">1.5 Acres</span>
+      </div>
+      <div class="land-info">
+        <h3>Organic Farm Plot – Satara</h3>
+        <div class="land-meta">
+          <span class="land-tag">📍 Satara, Maharashtra</span>
+          <span class="land-tag">✅ Road Access</span>
+          <span class="land-tag">🌱 Organic Certified</span>
+        </div>
+        <div class="land-price">₹11,20,000 <span>/ 1.5 acres</span></div>
+        <div class="land-seller">👨‍🌾 Listed by: Vijay Sharma · Farmer 1</div>
+        <div class="land-actions">
+          <button class="btn-contact" onclick="contactFarmer('Vijay Sharma', 'Satara Land')">📞 Contact Farmer</button>
+          <button class="btn-wish">♡</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- List Your Land Banner -->
+  <div class="list-land-banner">
+    <div>
+      <h3>🌾 Want to Sell Your Farm Land?</h3>
+      <p>List your 1–2 acre agricultural land for free on FarmBuddy and connect directly with thousands of buyers across Maharashtra.</p>
+    </div>
+    <a href="login.html" class="btn-list-land">+ List My Land Free</a>
+  </div>
+</section>
+
+<footer>
+  <p>© 2024 <span>FarmBuddy</span>. All rights reserved.</p>
+</footer>
+
+<div class="toast" id="toast" style="position:fixed;bottom:30px;right:30px;background:#1a4a1a;color:white;padding:14px 22px;border-radius:10px;font-weight:600;z-index:999;transform:translateY(100px);opacity:0;transition:all 0.3s;"></div>
+<script src="js/api.js"></script>
+<script>
+  // Update nav based on login state
+  const user = getUser();
+  const loginLi = document.getElementById('loginNavItem');
+  if (loginLi) {
+    if (user) {
+      if (user.role === 'farmer') {
+        loginLi.innerHTML = `<a href="farmer2.html">Dashboard</a>`;
+      } else {
+        loginLi.innerHTML = `<a href="#" onclick="Auth.logout()">Logout</a>`;
+      }
+    }
+  }
+
+  // Update cart badge
+  document.querySelectorAll('.cart-badge').forEach(el => el.textContent = Cart.count());
+
+  function addToCart(name, price, productId, farmerId) {
+    Cart.add({ _id: productId || name, farmerId: farmerId || 'unknown', name, price }, 1);
+    document.querySelectorAll('.cart-badge').forEach(el => el.textContent = Cart.count());
+    showToast(name + ' added to cart!');
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    if (!t) return;
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+  }
+</script>
+</body>
+</html>

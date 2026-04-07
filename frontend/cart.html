@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cart - FarmBuddy</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --green: #2d6a2d; --green-dark: #1a4a1a; --green-light: #4a9e4a; --orange: #e07b39; --cream: #faf7f2; --border: #d4e8d4; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); }
+  nav { background: var(--green-dark); padding: 0 5%; display: flex; align-items: center; justify-content: space-between; height: 70px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 20px rgba(0,0,0,0.3); }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .logo-text strong { font-family: 'Playfair Display', serif; font-size: 22px; color: white; display: block; }
+  .logo-text span { font-size: 11px; color: #a8d5a8; }
+  .nav-links { list-style: none; display: flex; gap: 28px; align-items: center; }
+  .nav-links a { color: #d4ead4; text-decoration: none; font-size: 14px; font-weight: 500; }
+  .main { max-width: 900px; margin: 0 auto; padding: 40px 24px; }
+  h1 { font-family: 'Playfair Display', serif; font-size: 32px; color: var(--green-dark); margin-bottom: 32px; }
+  .empty { text-align: center; padding: 80px 20px; color: #888; }
+  .empty .icon { font-size: 80px; margin-bottom: 16px; }
+  .empty p { font-size: 18px; margin-bottom: 24px; }
+  .empty a { background: var(--green); color: white; padding: 12px 28px; border-radius: 25px; text-decoration: none; font-weight: 600; }
+  .cart-item { background: white; border-radius: 14px; padding: 20px 24px; margin-bottom: 16px; display: flex; align-items: center; gap: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); border: 1px solid var(--border); }
+  .item-name { flex: 1; font-size: 16px; font-weight: 600; color: var(--green-dark); }
+  .item-price { color: #555; font-size: 14px; }
+  .qty-controls { display: flex; align-items: center; gap: 12px; }
+  .qty-btn { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--green); background: white; color: var(--green); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: 700; transition: all 0.2s; }
+  .qty-btn:hover { background: var(--green); color: white; }
+  .qty-val { font-size: 16px; font-weight: 700; min-width: 24px; text-align: center; }
+  .item-total { font-weight: 700; font-size: 16px; color: var(--green); min-width: 80px; text-align: right; }
+  .remove-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: #e74c3c; padding: 4px; border-radius: 6px; transition: background 0.2s; }
+  .remove-btn:hover { background: #fee2e2; }
+  .summary { background: white; border-radius: 16px; padding: 28px; box-shadow: 0 2px 20px rgba(0,0,0,0.08); border: 1px solid var(--border); margin-top: 24px; }
+  .summary-row { display: flex; justify-content: space-between; font-size: 15px; margin-bottom: 12px; color: #555; }
+  .summary-total { display: flex; justify-content: space-between; font-size: 20px; font-weight: 700; color: var(--green-dark); padding-top: 16px; border-top: 2px solid var(--border); margin-top: 8px; }
+  .place-btn { width: 100%; background: var(--orange); color: white; border: none; padding: 18px; border-radius: 14px; font-size: 18px; font-weight: 700; font-family: 'DM Sans', sans-serif; cursor: pointer; margin-top: 20px; transition: all 0.2s; }
+  .place-btn:hover:not(:disabled) { background: #c96a28; transform: translateY(-2px); }
+  .place-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+  .success-msg { background: #d1fae5; border: 1px solid #6ee7b7; color: #065f46; padding: 20px; border-radius: 12px; text-align: center; font-size: 16px; margin-top: 20px; display: none; }
+  .error-msg { background: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; padding: 14px; border-radius: 10px; font-size: 14px; margin-top: 16px; display: none; }
+  footer { background: var(--green-dark); color: #a8d5a8; text-align: center; padding: 24px; font-size: 13px; margin-top: 60px; }
+  footer span { color: white; }
+  .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none; padding:4px; }
+  .hamburger span { width:24px; height:2px; background:white; border-radius:2px; display:block; }
+  .mobile-menu { display:none; position:fixed; top:70px; left:0; right:0; background:var(--green-dark); padding:16px 5% 20px; z-index:99; }
+  .mobile-menu.open { display:block; }
+  .mobile-menu ul { list-style:none; }
+  .mobile-menu ul li a { display:block; padding:13px 0; color:#d4ead4; text-decoration:none; font-size:15px; border-bottom:1px solid #2d5a2d; }
+  @media (max-width:700px) { .nav-links { display:none; } .hamburger { display:flex; } }
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="logo">
+    <span style="font-size:26px">🌿</span>
+    <div class="logo-text"><strong>FarmBuddy</strong><span>Fresh from Farm to Your Home</span></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="products.html">Products</a></li>
+    <li id="authNavItem"><a href="login.html">Login</a></li>
+  </ul>
+  <button class="hamburger" onclick="document.getElementById('mobileMenu').classList.toggle('open')"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <ul>
+    <li><a href="index.html">🏠 Home</a></li>
+    <li><a href="products.html">🛍️ Products</a></li>
+    <li><a href="cart.html">🛒 Cart</a></li>
+  </ul>
+</div>
+
+<div class="main">
+  <h1>🛒 Your Cart</h1>
+  <div id="cartContent"></div>
+</div>
+
+<footer><p>© 2024 <span>FarmBuddy</span>. All rights reserved.</p></footer>
+<script src="js/api.js"></script>
+<script>
+  // Update nav auth link
+  const user = getUser();
+  if (user) document.getElementById('authNavItem').innerHTML = `<a href="#" onclick="Auth.logout()">Logout (${user.username})</a>`;
+
+  function renderCart() {
+    const cart = Cart.get();
+    const el = document.getElementById('cartContent');
+    if (!cart.length) {
+      el.innerHTML = `<div class="empty"><div class="icon">🛒</div><p>Your cart is empty</p><a href="products.html">Browse Products</a></div>`;
+      return;
+    }
+    const itemsHtml = cart.map(item => `
+      <div class="cart-item">
+        <div class="item-name">${item.name}<div class="item-price">₹${item.price} each</div></div>
+        <div class="qty-controls">
+          <button class="qty-btn" onclick="changeQty('${item.productId}', -1)">−</button>
+          <span class="qty-val">${item.quantity}</span>
+          <button class="qty-btn" onclick="changeQty('${item.productId}', 1)">+</button>
+        </div>
+        <div class="item-total">₹${item.price * item.quantity}</div>
+        <button class="remove-btn" onclick="removeItem('${item.productId}')" title="Remove">🗑️</button>
+      </div>
+    `).join('');
+    el.innerHTML = `
+      ${itemsHtml}
+      <div class="summary">
+        <div class="summary-row"><span>Subtotal (${Cart.count()} items)</span><span>₹${Cart.total()}</span></div>
+        <div class="summary-row"><span>Delivery</span><span style="color:var(--green)">FREE</span></div>
+        <div class="summary-total"><span>Total Amount</span><span>₹${Cart.total()}</span></div>
+        <button class="place-btn" id="placeBtn" onclick="placeOrder()">🛍️ Place Order</button>
+        <div class="error-msg" id="errMsg"></div>
+        <div class="success-msg" id="successMsg">✅ Order placed! Thank you for shopping with FarmBuddy.</div>
+      </div>
+    `;
+  }
+
+  function changeQty(productId, delta) {
+    const cart = Cart.get();
+    const item = cart.find(i => i.productId === productId);
+    if (item) { item.quantity = Math.max(0, item.quantity + delta); }
+    Cart.save(cart.filter(i => i.quantity > 0));
+    renderCart();
+  }
+
+  function removeItem(productId) {
+    Cart.remove(productId);
+    renderCart();
+  }
+
+  async function placeOrder() {
+    if (!getUser()) { window.location.href = 'login.html'; return; }
+    const btn = document.getElementById('placeBtn');
+    const errEl = document.getElementById('errMsg');
+    const successEl = document.getElementById('successMsg');
+    errEl.style.display = 'none';
+    btn.disabled = true; btn.textContent = 'Placing order...';
+    try {
+      await Orders.place(Cart.get());
+      Cart.clear();
+      successEl.style.display = 'block';
+      btn.style.display = 'none';
+      setTimeout(() => { window.location.href = 'index.html'; }, 2500);
+    } catch (err) {
+      errEl.textContent = err.message; errEl.style.display = 'block';
+      btn.disabled = false; btn.textContent = '🛍️ Place Order';
+    }
+  }
+
+  renderCart();
+</script>
+</body>
+</html>

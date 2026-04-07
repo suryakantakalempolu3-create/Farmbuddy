@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Us - FarmBuddy</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #2d6a2d; --green-dark: #1a4a1a; --green-light: #4a9e4a;
+    --orange: #e07b39; --cream: #faf7f2; --white: #ffffff;
+    --text: #1a2e1a; --text-light: #5a7a5a; --border: #d4e8d4;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); }
+
+  nav {
+    background: var(--green-dark); padding: 0 5%;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 70px; position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+  }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .logo-icon { font-size: 28px; }
+  .logo-text strong { font-family: 'Playfair Display', serif; font-size: 22px; color: white; display: block; }
+  .logo-text span { font-size: 11px; color: #a8d5a8; }
+  .nav-links { list-style: none; display: flex; gap: 30px; align-items: center; }
+  .nav-links a { color: #d4ead4; text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: white; }
+  .nav-links a.active { border-bottom: 2px solid var(--orange); padding-bottom: 2px; }
+  .cart-btn { background: var(--orange); color: white; border: none; padding: 8px 18px; border-radius: 25px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; text-decoration: none; transition: background 0.2s; }
+  .cart-btn:hover { background: #c96a28; }
+  .cart-badge { background: white; color: var(--orange); border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+
+  /* HERO */
+  .about-hero {
+    background: linear-gradient(135deg, var(--green-dark) 0%, var(--green) 100%);
+    padding: 70px 8%; text-align: center; color: white;
+  }
+  .about-hero h1 { font-family: 'Playfair Display', serif; font-size: 48px; margin-bottom: 16px; }
+  .about-hero p { font-size: 18px; color: #c8e6c8; max-width: 580px; margin: 0 auto; line-height: 1.7; }
+
+  /* MISSION */
+  .mission-section { padding: 64px 8%; background: white; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; max-width: 1100px; margin: 0 auto; }
+  .mission-img { border-radius: 20px; width: 100%; height: 380px; object-fit: cover; box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
+  .mission-content h2 { font-family: 'Playfair Display', serif; font-size: 36px; margin-bottom: 16px; }
+  .mission-content p { color: var(--text-light); font-size: 15px; line-height: 1.8; margin-bottom: 16px; }
+  .green-text { color: var(--green); font-weight: 700; }
+
+  /* VALUES */
+  .values-section { padding: 64px 8%; background: var(--cream); }
+  .values-section h2 { font-family: 'Playfair Display', serif; font-size: 36px; text-align: center; margin-bottom: 8px; }
+  .values-section .sub { text-align: center; color: var(--text-light); margin-bottom: 40px; }
+  .values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1000px; margin: 0 auto; }
+  .value-card { background: white; border-radius: 16px; padding: 28px 24px; border: 1px solid var(--border); box-shadow: 0 2px 12px rgba(0,0,0,0.06); text-align: center; }
+  .value-card .icon { font-size: 44px; margin-bottom: 14px; }
+  .value-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 10px; }
+  .value-card p { font-size: 13px; color: var(--text-light); line-height: 1.6; }
+
+
+  /* TEAM */
+  .team-section { padding: 64px 8%; background: white; }
+  .team-section h2 { font-family: 'Playfair Display', serif; font-size: 34px; text-align: center; margin-bottom: 8px; }
+  .team-section .sub { text-align: center; color: var(--text-light); margin-bottom: 40px; }
+  .team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 900px; margin: 0 auto; }
+  .team-card { text-align: center; }
+  .team-card img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--green); margin-bottom: 14px; }
+  .team-card h4 { font-size: 16px; font-weight: 700; }
+  .team-card span { font-size: 13px; color: var(--text-light); }
+
+  footer { background: var(--green-dark); color: #a8d5a8; text-align: center; padding: 20px; font-size: 13px; margin-top: 20px; }
+  footer span { color: white; }
+
+  @media (max-width: 768px) {
+    .two-col { grid-template-columns: 1fr; }
+    .values-grid { grid-template-columns: 1fr; }
+    .land-cards { grid-template-columns: 1fr; }
+    .team-grid { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+
+  .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none; padding:4px; }
+  .hamburger span { width:24px; height:2px; background:white; border-radius:2px; display:block; }
+  .mobile-menu { display:none; position:fixed; top:70px; left:0; right:0; background:var(--green-dark); padding:16px 5% 20px; z-index:99; box-shadow:0 6px 20px rgba(0,0,0,0.3); border-top:1px solid #2d5a2d; }
+  .mobile-menu.open { display:block; }
+  .mobile-menu ul { list-style:none; display:flex; flex-direction:column; }
+  .mobile-menu ul li a { display:block; padding:13px 0; color:#d4ead4; text-decoration:none; font-size:15px; font-weight:500; border-bottom:1px solid #2d5a2d; }
+  .mobile-menu ul li a.active { color:white; }
+  .mobile-menu .m-cart { display:block; margin-top:14px; background:var(--orange); color:white; text-align:center; padding:12px; border-radius:25px; text-decoration:none; font-weight:600; }
+  @media (max-width:700px) { .nav-links, .cart-btn { display:none; } .hamburger { display:flex; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <span class="logo-icon">🌿</span>
+    <div class="logo-text">
+      <strong>FarmBuddy</strong>
+      <span>Fresh from Farm to Your Home</span>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="products.html">Products</a></li>
+    <li><a href="farmers.html">Farmers</a></li>
+    <li><a href="about.html" class="active">About</a></li>
+    <li id="loginNavItem"><a href="login.html">Login</a></li>
+  </ul>
+  <a href="cart.html" class="cart-btn">🛒 Cart <span class="cart-badge" id="cartBadge">0</span></a>
+  <button class="hamburger" onclick="toggleMenu()" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <ul>
+    <li><a href="index.html">🏠 Home</a></li>
+    <li><a href="products.html">🛍️ Products</a></li>
+    <li><a href="farmers.html">👨‍🌾 Farmers</a></li>
+    <li><a href="about.html">ℹ️ About</a></li>
+    <li><a href="login.html">🔑 Login</a></li>
+  </ul>
+  <a href="cart.html" class="m-cart">🛒 View Cart</a>
+</div>
+
+<!-- HERO -->
+<div class="about-hero">
+  <h1>About FarmBuddy 🌿</h1>
+  <p>We are on a mission to build a direct, transparent, and fair bridge between India's farmers and every home that values fresh, healthy food.</p>
+</div>
+
+<!-- MISSION -->
+<section class="mission-section">
+  <div class="two-col">
+    <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&q=80" alt="Farm" class="mission-img">
+    <div class="mission-content">
+      <h2>Our Story</h2>
+      <p>FarmBuddy was born out of a simple idea: <span class="green-text">farmers deserve better, and families deserve fresher.</span> We saw firsthand how middlemen were eating into farmers' profits while pushing up prices for buyers.</p>
+      <p>Founded in 2022, FarmBuddy connects verified farmers directly with customers. Every product you buy on FarmBuddy is harvested and dispatched within 24 hours — no cold storage, no preservatives, no compromise.</p>
+      <p>Today we work with <strong>120+ farmers</strong> across <strong>15 Indian states</strong>, delivering freshness to over <strong>10,000 families</strong> every month.</p>
+    </div>
+  </div>
+</section>
+
+<!-- VALUES -->
+<section class="values-section">
+  <h2>What We Stand For</h2>
+  <p class="sub">Our core values guide everything we do — from farmer onboarding to your doorstep delivery.</p>
+  <div class="values-grid">
+    <div class="value-card">
+      <div class="icon">🌿</div>
+      <h3>100% Organic</h3>
+      <p>We verify every farmer's practices. No harmful pesticides, no GMOs — just nature doing its best work.</p>
+    </div>
+    <div class="value-card">
+      <div class="icon">🤝</div>
+      <h3>Fair to Farmers</h3>
+      <p>Farmers earn 3x more with us than through traditional markets. Their prosperity is our purpose.</p>
+    </div>
+    <div class="value-card">
+      <div class="icon">🚚</div>
+      <h3>Speed & Freshness</h3>
+      <p>Harvested today, at your door tomorrow. Our logistics ensure peak freshness on every order.</p>
+    </div>
+    <div class="value-card">
+      <div class="icon">🔒</div>
+      <h3>Transparent Pricing</h3>
+      <p>No hidden fees. You see exactly what the farmer earns and what you pay. Honest, always.</p>
+    </div>
+    <div class="value-card">
+      <div class="icon">♻️</div>
+      <h3>Eco Friendly</h3>
+      <p>All packaging is biodegradable. We're committed to zero-waste delivery by 2025.</p>
+    </div>
+    <div class="value-card">
+      <div class="icon">🏘️</div>
+      <h3>Community First</h3>
+      <p>We invest 5% of profits back into rural farming communities for education and infrastructure.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- TEAM -->
+<section class="team-section">
+  <h2>The People Behind FarmBuddy</h2>
+  <p class="sub">A passionate team of farmers, technologists, and food lovers.</p>
+  <div class="team-grid">
+    <div class="team-card">
+      <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&q=80" alt="Arjun Mehta">
+      <h4>Arjun Mehta</h4>
+      <span>Founder & CEO</span>
+    </div>
+    <div class="team-card">
+      <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&q=80" alt="Priya Nair">
+      <h4>Priya Nair</h4>
+      <span>Head of Farmer Relations</span>
+    </div>
+    <div class="team-card">
+      <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200&q=80" alt="Rohit Joshi">
+      <h4>Rohit Joshi</h4>
+      <span>Head of Logistics</span>
+    </div>
+  </div>
+</section>
+
+<footer><p>© 2024 <span>FarmBuddy</span>. All rights reserved.</p></footer>
+
+<script>
+  // Cart badge
+  const cart = JSON.parse(localStorage.getItem('fb_cart') || '[]');
+  document.getElementById('cartBadge').textContent = cart.reduce((s, i) => s + i.qty, 0);
+
+  function openEnquiry(plotName) {
+    document.getElementById('selectedPlot').style.display = 'block';
+    document.getElementById('plotName').textContent = plotName;
+    // Pre-select in dropdown
+    const sel = document.getElementById('fplot');
+    for (let i = 0; i < sel.options.length; i++) {
+      if (sel.options[i].value === plotName) { sel.selectedIndex = i; break; }
+    }
+    document.getElementById('enquiryForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function submitEnquiry() {
+    const name = document.getElementById('fname').value.trim();
+    const phone = document.getElementById('fphone').value.trim();
+    const plot = document.getElementById('fplot').value;
+    if (!name || !phone || !plot) {
+      alert('Please fill in your Name, Phone, and select a Plot.');
+      return;
+    }
+    document.getElementById('successMsg').style.display = 'block';
+    document.getElementById('fname').value = '';
+    document.getElementById('fphone').value = '';
+    document.getElementById('femail').value = '';
+    document.getElementById('fplot').value = '';
+    document.getElementById('fpurpose').value = '';
+    document.getElementById('fmessage').value = '';
+    document.getElementById('selectedPlot').style.display = 'none';
+    setTimeout(() => { document.getElementById('successMsg').style.display = 'none'; }, 6000);
+  }
+</script>
+<script src="js/api.js"></script>
+<script>
+  const u = getUser();
+  const loginLi = document.getElementById("loginNavItem");
+  if (loginLi && u) {
+    loginLi.innerHTML = u.role === "farmer" ? '<a href="farmer2.html">Dashboard</a>' : '<a href="#" onclick="Auth.logout()">Logout</a>';
+  }
+  document.querySelectorAll(".cart-badge").forEach(el => el.textContent = Cart.count());
+</script>
+</body>
+</html>
